@@ -12,8 +12,12 @@ CKnave = Symbol("C is a Knave")
 # Puzzle 0
 # A says "I am both a knight and a knave."
 knowledge0 = And(
-    # A is a knight if and only if A is a knight and A is a knave
+    # A is either a knight or a knave, but not both
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    # If A is a knight, then A's statement is true
     Implication(AKnight, And(AKnight, AKnave)),
+    # If A is a knave, then A's statement is false
     Implication(AKnave, Not(And(AKnight, AKnave)))
 )
 
@@ -21,8 +25,15 @@ knowledge0 = And(
 # A says "We are both knaves."
 # B says nothing.
 knowledge1 = And(
-    # A is a knight if and only if A and B are both knaves
+    # A is either a knight or a knave, but not both
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    # B is either a knight or a knave, but not both
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    # If A is a knight, then A's statement is true
     Implication(AKnight, And(AKnave, BKnave)),
+    # If A is a knave, then A's statement is false
     Implication(AKnave, Not(And(AKnave, BKnave)))
 )
 
@@ -30,12 +41,21 @@ knowledge1 = And(
 # A says "We are the same kind."
 # B says "We are of different kinds."
 knowledge2 = And(
-    # A is a knight if and only if A and B are the same kind
-    Implication(AKnight, Biconditional(AKnight, BKnight)),
-    Implication(AKnave, Not(Biconditional(AKnight, BKnight))),
-    # B is a knight if and only if A and B are different kinds
-    Implication(BKnight, Not(Biconditional(AKnight, BKnight))),
-    Implication(BKnave, Biconditional(AKnight, BKnight))
+    # A is either a knight or a knave, but not both
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    # B is either a knight or a knave, but not both
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    # If A is a knight, then A's statement is true
+    Implication(AKnight, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
+    # If A is a knave, then A's statement is false
+    Implication(AKnave, Not(Or(And(AKnight, BKnight), And(AKnave, BKnave)))),
+    # If B is a knight, then B's statement is true
+    Implication(BKnight, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
+    # If B is a knave, then B's statement is false
+    Implication(BKnave, Not(Or(And(AKnight, BKnave), And(AKnave, BKnight))))
+    
 )
 
 # Puzzle 3
@@ -44,22 +64,32 @@ knowledge2 = And(
 # B says "C is a knave."
 # C says "A is a knight."
 knowledge3 = And(
-    # A is a knight if and only if A is a knight or A is a knave
-    Implication(AKnight, Or(AKnight, AKnave)),
-    Implication(AKnave, Not(Or(AKnight, AKnave))),
-    # B is a knight if and only if A said "I am a knave"
+    # A is either a knight or a knave, but not both
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    # B is either a knight or a knave, but not both
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    # C is either a knight or a knave, but not both
+    Or(CKnight, CKnave),
+    Not(And(CKnight, CKnave)),
+    # If A is a knight, then A's statement is true
+    Implication(AKnight, And(AKnight, AKnave)),
+    # If A is a knave, then A's statement is false
+    Implication(AKnave, Not(And(AKnight, AKnave))),
+    # If B is a knight and A said "I am a knave", then A said "I am a knave"
     Implication(BKnight, Implication(AKnight, AKnave)),
+    # If B is a knight and A said "I am a knave", then A said "I am a knave"
     Implication(BKnight, Implication(AKnave, Not(AKnave))),
+    # If B is a knave and A said "I am a knave", then A did not say "I am a knave"
     Implication(BKnave, Not(Implication(AKnight, AKnave))),
+    # If B is a knave and A said "I am a knave", then A did not say "I am a knave"
     Implication(BKnave, Not(Implication(AKnave, Not(AKnave)))),
-    # B is a knight if and only if C is a knave
+    # If B is a knight and C is a knave
     Implication(BKnight, CKnave),
+    # If B is a knave and C is not a knave
     Implication(BKnave, Not(CKnave)),
-    # C is a knight if and only if A is a knight
-    Implication(CKnight, AKnight),
-    Implication(CKnave, Not(AKnight))
 )
-
 
 def main():
     symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]
