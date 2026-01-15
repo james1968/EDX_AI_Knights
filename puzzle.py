@@ -73,22 +73,18 @@ knowledge3 = And(
     # C is either a knight or a knave, but not both
     Or(CKnight, CKnave),
     Not(And(CKnight, CKnave)),
-    # If A is a knight, then A's statement is true
-    Implication(AKnight, And(AKnight, AKnave)),
-    # If A is a knave, then A's statement is false
-    Implication(AKnave, Not(And(AKnight, AKnave))),
-    # If B is a knight and A said "I am a knave", then A said "I am a knave"
-    Implication(BKnight, Implication(AKnight, AKnave)),
-    # If B is a knight and A said "I am a knave", then A said "I am a knave"
-    Implication(BKnight, Implication(AKnave, Not(AKnave))),
-    # If B is a knave and A said "I am a knave", then A did not say "I am a knave"
-    Implication(BKnave, Not(Implication(AKnight, AKnave))),
-    # If B is a knave and A said "I am a knave", then A did not say "I am a knave"
-    Implication(BKnave, Not(Implication(AKnave, Not(AKnave)))),
-    # If B is a knight and C is a knave
+    # If B is a knight, then B's first statement is true
+    Implication(BKnight, Implication(AKnave, AKnave)),
+    # If B is a knave, then B's first statement is false
+    Implication(BKnave, Not(Implication(AKnave, AKnave))),
+    # If B is a knight, then B's second statement is true
     Implication(BKnight, CKnave),
-    # If B is a knave and C is not a knave
+    # If B is a knave, then B's second statement is false
     Implication(BKnave, Not(CKnave)),
+    # If C is a knight, then C's statement is true
+    Implication(CKnight, AKnight),
+    # If C is a knave, then C's statement is false
+    Implication(CKnave, Not(AKnight))   
 )
 
 def main():
